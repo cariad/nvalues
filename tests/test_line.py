@@ -6,6 +6,6 @@ def test_default() -> None:
 
 
 def test_set() -> None:
-    line = Line[int, str]("default")
+    line = Line[int, str]()
     line.set(0, "foo")
     assert line.get(0) == "foo"

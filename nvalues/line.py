@@ -4,7 +4,7 @@ from nvalues.volume import Volume
 
 class Line(Volume[tuple[XKeyT], ValueT]):
     """
-    A 1-dimensional volume of values.
+    A one-dimensional volume of values.
     """
 
     def get(self, x: XKeyT) -> ValueT:
