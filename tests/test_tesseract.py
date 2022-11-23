@@ -2,6 +2,6 @@ from nvalues import Tesseract
 
 
 def test() -> None:
-    cube = Tesseract[int, int, int, int, str]()
-    cube.set(0, 0, 0, 0, "foo")
-    assert cube.get(0, 0, 0, 0) == "foo"
+    tesseract = Tesseract[int, int, int, int, str]()
+    tesseract.set(0, 0, 0, 0, "foo")
+    assert tesseract.get(0, 0, 0, 0) == "foo"
