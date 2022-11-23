@@ -1,6 +1,6 @@
 from pytest import mark, raises
 
-from nvalues import Volume
+from nvalues import Value, Volume
 from nvalues.exceptions import NKeyError, NoDefaultValue
 
 
@@ -127,3 +127,22 @@ def test_getitem__no_default(keys: tuple[int, int, int], expect: str) -> None:
         _ = v[(keys)]
 
     assert str(ex.value) == expect
+
+
+def test_iter() -> None:
+    v = Volume[tuple[int, int, int], str]()
+    v[1, 1, 1] = "1-1-1"
+    v[1, 1, 2] = "1-1-2"
+    v[1, 2, 0] = "1-2-0"
+    v[2, 0, 0] = "2-0-0"
+
+    assert list(v) == [
+        Value((1, 1, 1), "1-1-1"),
+        Value((1, 1, 2), "1-1-2"),
+        Value((1, 2, 0), "1-2-0"),
+        Value((2, 0, 0), "2-0-0"),
+    ]
+
+
+def test_iter__empty() -> None:
+    assert not list(Volume[tuple[int, int, int], str]())

@@ -2,6 +2,8 @@
 
 The `Tesseract` class is a wrapper around the [`Volume` class](/volume) to simplify the creation of four-dimensional volumes.
 
+All the base functionality, such as default values, key accessors and iteration, is inherited by `Tesseract`.
+
 ## Construction
 
 `Tesseract` requires five generic types:
@@ -20,9 +22,7 @@ from nvalues import Tesseract
 tesseract = Tesseract[str, str, int, float, bool]()
 ```
 
-See the base [`Volume` class](/volume) for more construction detail.
-
-## Usage
+## Reading and setting values
 
 Values can be read and set via their keys as described in the base [`Volume` class](/volume), but `Tesseract` also provides `get()` and `set()` helper functions:
 

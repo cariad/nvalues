@@ -28,11 +28,11 @@ volume = Volume[tuple[str, int], float]()
 volume = Volume[tuple[int, str, float], bool]()
 ```
 
-An optional default value can be specified here too:
+## Default value
+
+An optional default value can be specified in the initialiser:
 
 ```python
-from nvalues import Volume
-
 volume = Volume[tuple[int, int], str](default_value="")
 ```
 
@@ -40,7 +40,7 @@ If you request a key that doesn't exist then this default value will be returned
 
 A default value can be set after construction via the `default` property and cleared by calling `clear_default()`.
 
-## Usage
+## Reading and setting values
 
 Values are read and set via their keys. For example:
 
@@ -51,4 +51,25 @@ volume = Volume[tuple[int, int], str]()
 volume[0, 0] = "zero"
 print(volume[0, 0])
 # "zero"
+```
+
+## Iterating values
+
+`Volume` natively supports iteration and will yield the key and value for every item it holds.
+
+```python
+from nvalues import Volume
+
+volume = Volume[tuple[int, int], str]()
+
+volume[0, 0] = "zero-zero"
+volume[4, 0] = "four-zero"
+volume[0, 4] = "zero-four"
+
+for item in volume:
+    print(f"Found {item.value} at {item.key}")
+
+# Found zero-zero at (0, 0)
+# Found zero-four at (0, 4)
+# Found four-zero at (4, 0)
 ```

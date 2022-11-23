@@ -1,7 +1,8 @@
-from typing import Any, Dict, Generic, cast
+from typing import Any, Dict, Generic, Iterator, List, Optional, cast
 
-from nvalues.exceptions import NKeyError, NoDefaultValue
+from nvalues.exceptions import KeyIndexOutOfRange, NKeyError, NoDefaultValue
 from nvalues.types import KeysT, ValueT
+from nvalues.value import Value
 
 
 class Volume(Generic[KeysT, ValueT]):
@@ -44,6 +45,7 @@ class Volume(Generic[KeysT, ValueT]):
         default_value: ValueT | NullDefaultValue = NullDefaultValue(),
     ) -> None:
         self._default = default_value
+        self._dim_len: Optional[int] = None  # Unknown until a value is added.
         self._values: Dict[Any, Any] = {}
 
     def __getitem__(self, keys: KeysT) -> ValueT:
@@ -62,7 +64,44 @@ class Volume(Generic[KeysT, ValueT]):
 
         return cast(ValueT, context)
 
+    def __iter__(self) -> Iterator[Value[KeysT, ValueT]]:
+        if self._dim_len is None:
+            # self._dim_len isn't set until a value is added. If it's None then
+            # there legitimately aren't any values to yield.
+            return
+
+        indexes = [0] * self._dim_len
+
+        while True:
+            try:
+                keys, value = self._from_index(indexes)
+            except KeyIndexOutOfRange as out_of_range:
+                if out_of_range.key_depth == 0:
+                    # When the root index is eventually out of range then stop
+                    # because there aren't any parents to iterate.
+                    return
+
+                # Reset the key index (and all children) that was out of range
+                # to 0. We'll increment its parent in a moment.
+                for index in range(out_of_range.key_depth, self._dim_len):
+                    indexes[index] = 0
+
+                # Increment the parent index of the key index that was out of
+                # range. There's no guarantee that this index exists, but we'll
+                # find out on the next iteration.
+                indexes[out_of_range.key_depth - 1] += 1
+                continue
+
+            yield Value(cast(KeysT, tuple(keys)), value)
+
+            # Increment the leaf key index. We don't know that a value at this
+            # index will exist, but the next iteration will handle and roll-
+            # over the indexes if we need to.
+            indexes[-1] += 1
+
     def __setitem__(self, keys: KeysT, value: ValueT) -> None:
+        self._dim_len = len(keys)
+
         context = self._values
         index = 0
 
@@ -74,6 +113,41 @@ class Volume(Generic[KeysT, ValueT]):
             index += 1
 
         context[keys[-1]] = value
+
+    def _from_index(
+        self,
+        indexes: List[int],
+        context: Optional[Dict[Any, Any]] = None,
+        depth: int = 0,
+    ) -> tuple[List[Any], ValueT]:
+        """
+        Returns the key and value at the index described by `indexes`.
+
+        Raises `KeyIndexOutOfRange` if `indexes` is out of range.
+        """
+
+        context = self._values if context is None else context
+
+        key_index = indexes[depth]
+        keys = list(context.keys())
+
+        try:
+            key = keys[key_index]
+        except IndexError as index_error:
+            raise KeyIndexOutOfRange(depth) from index_error
+
+        context = context[key]
+
+        if depth == len(indexes) - 1:
+            return [key], cast(ValueT, context)
+
+        child_keys, value = self._from_index(
+            indexes,
+            context=context,
+            depth=depth + 1,
+        )
+
+        return [key, *child_keys], value
 
     def clear_default(self) -> None:
         """

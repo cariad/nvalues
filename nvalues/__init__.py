@@ -13,6 +13,7 @@ from nvalues.grid import Grid
 from nvalues.line import Line
 from nvalues.penteract import Penteract
 from nvalues.tesseract import Tesseract
+from nvalues.value import Value
 from nvalues.volume import Volume
 
 with files(__package__).joinpath("VERSION").open("r") as t:
@@ -24,5 +25,6 @@ __all__ = [
     "Line",
     "Penteract",
     "Tesseract",
+    "Value",
     "Volume",
 ]

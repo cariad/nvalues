@@ -2,6 +2,8 @@
 
 The `Penteract` class is a wrapper around the [`Volume` class](/volume) to simplify the creation of five-dimensional volumes.
 
+All the base functionality, such as default values, key accessors and iteration, is inherited by `Penteract`.
+
 ## Construction
 
 `Penteract` requires six generic types:
@@ -21,9 +23,7 @@ from nvalues import Penteract
 penteract = Penteract[int, str, str, int, float, bool]()
 ```
 
-See the base [`Volume` class](/volume) for more construction detail.
-
-## Usage
+## Reading and setting values
 
 Values can be read and set via their keys as described in the base [`Volume` class](/volume), but `Penteract` also provides `get()` and `set()` helper functions:
 
