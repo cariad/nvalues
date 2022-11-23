@@ -156,7 +156,7 @@ print(grid.get("A", 0))
 # True
 ```
 
-# The `Cube` class
+## The `Cube` class
 
 The `Cube` class is a wrapper around the [`Volume` class](#the-volume-class) to simplify the creation of three-dimensional volumes.
 
