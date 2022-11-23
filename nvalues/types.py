@@ -7,3 +7,4 @@ ValueT = TypeVar("ValueT")
 
 XKeyT = TypeVar("XKeyT")
 YKeyT = TypeVar("YKeyT")
+ZKeyT = TypeVar("ZKeyT")
