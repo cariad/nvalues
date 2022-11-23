@@ -1,0 +1,18 @@
+site_name: NValues
+site_url: https://nvalues.dev/
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+nav:
+  - index.md
+  - volume.md
+  - line.md
+  - grid.md
+  - cube.md
+  - tesseract.md
+  - penteract.md
+
+theme:
+  name: material

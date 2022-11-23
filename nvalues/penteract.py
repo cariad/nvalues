@@ -5,6 +5,25 @@ from nvalues.volume import Volume
 class Penteract(Volume[tuple[VKeyT, WKeyT, XKeyT, YKeyT, ZKeyT], ValueT]):
     """
     A five-dimensional volume of values.
+
+    Six generic types are required:
+
+    1. `v` key type
+    1. `w` key type
+    1. `x` key type
+    1. `y` key type
+    1. `z` key type
+    1. Value type
+
+    For example, to create a `Tesseract` with `v` integer keys, `w` string
+    keys, `x` string keys, `y` int keys, `z` float keys and boolean values:
+
+    ```python
+    penteract = Penteract[int, str, str, int, float, bool]()
+    ```
+
+    `default_value` is optional and defaults to none. Accessing a key without a
+    default value will provoke `NKeyError`.
     """
 
     def get(self, v: VKeyT, w: WKeyT, x: XKeyT, y: YKeyT, z: ZKeyT) -> ValueT:
