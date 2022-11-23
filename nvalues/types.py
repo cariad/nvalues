@@ -5,6 +5,7 @@ from typing import Any, TypeVar
 KeysT = TypeVar("KeysT", bound=tuple[Any, ...])
 ValueT = TypeVar("ValueT")
 
+VKeyT = TypeVar("VKeyT")
 WKeyT = TypeVar("WKeyT")
 XKeyT = TypeVar("XKeyT")
 YKeyT = TypeVar("YKeyT")

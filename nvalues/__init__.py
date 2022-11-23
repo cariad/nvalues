@@ -7,6 +7,7 @@ from importlib.resources import files
 from nvalues.cube import Cube
 from nvalues.grid import Grid
 from nvalues.line import Line
+from nvalues.penteract import Penteract
 from nvalues.tesseract import Tesseract
 from nvalues.volume import Volume
 
@@ -17,6 +18,7 @@ __all__ = [
     "Cube",
     "Grid",
     "Line",
+    "Penteract",
     "Tesseract",
     "Volume",
 ]
