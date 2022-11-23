@@ -52,8 +52,8 @@ volume = Volume[tuple[int], str]()
 # A grid with integer coordinates and string values:
 volume = Volume[tuple[int, int], str]()
 
-# A spreadsheet of floats with horizontal alphabetic
-# keys and vertical integer keys:
+# A spreadsheet of floats with horizontal alphabetic keys and
+# vertical integer keys:
 volume = Volume[tuple[str, int], float]()
 
 # A cube of booleans with integer x, string y and float z keys:
