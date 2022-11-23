@@ -18,7 +18,7 @@ jobs:
           runCmd: >
             pip install --upgrade --user -r requirements.dev.txt &&
             ./build.sh ${{ github.ref_name }} &&
-            mkdocs gh-deploy
+            mkdocs gh-deploy --force
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@v1.5.1
