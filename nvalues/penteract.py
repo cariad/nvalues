@@ -15,8 +15,8 @@ class Penteract(Volume[tuple[VKeyT, WKeyT, XKeyT, YKeyT, ZKeyT], ValueT]):
     1. `z` key type
     1. Value type
 
-    For example, to create a `Tesseract` with `v` integer keys, `w` string keys,
-    `x` string keys, `y` int keys, `z` float keys and boolean values:
+    For example, to create a `Tesseract` with `v` integer keys, `w` string
+    keys, `x` string keys, `y` int keys, `z` float keys and boolean values:
 
     ```python
     penteract = Penteract[int, str, str, int, float, bool]()
