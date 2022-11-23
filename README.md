@@ -60,11 +60,11 @@ volume = Volume[tuple[str, int], float]()
 volume = Volume[tuple[int, str, float], bool]()
 ```
 
-An optional default value can be specified here too:
+### Default value
+
+An optional default value can be specified in the initialiser:
 
 ```python
-from nvalues import Volume
-
 volume = Volume[tuple[int, int], str](default_value="")
 ```
 
@@ -72,7 +72,7 @@ If you request a key that doesn't exist then this default value will be returned
 
 A default value can be set after construction via the `default` property and cleared by calling `clear_default()`.
 
-### Usage
+### Getting and setting values
 
 Values are read and set via their keys. For example:
 
@@ -85,9 +85,32 @@ print(volume[0, 0])
 # "zero"
 ```
 
+### Iterating values
+
+`Volume` natively supports iteration and will yield the key and value for every item it holds.
+
+```python
+from nvalues import Volume
+
+volume = Volume[tuple[int, int], str]()
+
+volume[0, 0] = "zero-zero"
+volume[4, 0] = "four-zero"
+volume[0, 4] = "zero-four"
+
+for item in volume:
+    print(f"Found {item.value} at {item.key}")
+
+# Found zero-zero at (0, 0)
+# Found zero-four at (0, 4)
+# Found four-zero at (4, 0)
+```
+
 ## The `Line` class
 
 The `Line` class is a wrapper around the [`Volume` class](#the-volume-class) to simplify the creation of one-dimensional volumes.
+
+All the base functionality, such as default values, key accessors and iteration, is inherited by `Line`.
 
 ### Construction
 
@@ -104,12 +127,9 @@ from nvalues import Line
 line = Line[int, str]()
 ```
 
-See the base [`Volume` class](#the-volume-class) for more construction detail.
-
-### Usage
+### Reading and setting values
 
 Values can be read and set via their keys as described in the base [`Volume` class](#the-volume-class), but `Line` also provides `get()` and `set()` helper functions:
-
 
 ```python
 from nvalues import Line
@@ -123,6 +143,8 @@ print(line.get(0))
 ## The `Grid` class
 
 The `Grid` class is a wrapper around the [`Volume` class](#the-volume-class) to simplify the creation of two-dimensional volumes.
+
+All the base functionality, such as default values, key accessors and iteration, is inherited by `Grid`.
 
 ### Construction
 
@@ -140,9 +162,7 @@ from nvalues import Grid
 grid = Grid[str, int, bool]()
 ```
 
-See the base [`Volume` class](#the-volume-class) for more construction detail.
-
-### Usage
+### Reading and setting values
 
 Values can be read and set via their keys as described in the base [`Volume` class](#the-volume-class), but `Grid` also provides `get()` and `set()` helper functions:
 
@@ -159,6 +179,8 @@ print(grid.get("A", 0))
 ## The `Cube` class
 
 The `Cube` class is a wrapper around the [`Volume` class](#the-volume-class) to simplify the creation of three-dimensional volumes.
+
+All the base functionality, such as default values, key accessors and iteration, is inherited by `Cube`.
 
 ### Construction
 
@@ -177,9 +199,7 @@ from nvalues import Cube
 cube = Cube[str, int, float, bool]()
 ```
 
-See the base [`Volume` class](#the-volume-class) for more construction detail.
-
-### Usage
+### Reading and setting values
 
 Values can be read and set via their keys as described in the base [`Volume` class](#the-volume-class), but `Cube` also provides `get()` and `set()` helper functions:
 
@@ -196,6 +216,8 @@ print(cube.get("A", 0, 1.2))
 ## The `Tesseract` class
 
 The `Tesseract` class is a wrapper around the [`Volume` class](#the-volume-class) to simplify the creation of four-dimensional volumes.
+
+All the base functionality, such as default values, key accessors and iteration, is inherited by `Tesseract`.
 
 ### Construction
 
@@ -215,9 +237,7 @@ from nvalues import Tesseract
 tesseract = Tesseract[str, str, int, float, bool]()
 ```
 
-See the base [`Volume` class](#the-volume-class) for more construction detail.
-
-### Usage
+### Reading and setting values
 
 Values can be read and set via their keys as described in the base [`Volume` class](#the-volume-class), but `Tesseract` also provides `get()` and `set()` helper functions:
 
@@ -233,6 +253,8 @@ print(tesseract.get("A", "B", 0, 1.2))
 ## The `Penteract` class
 
 The `Penteract` class is a wrapper around the [`Volume` class](#the-volume-class) to simplify the creation of five-dimensional volumes.
+
+All the base functionality, such as default values, key accessors and iteration, is inherited by `Penteract`.
 
 ### Construction
 
@@ -253,9 +275,7 @@ from nvalues import Penteract
 penteract = Penteract[int, str, str, int, float, bool]()
 ```
 
-See the base [`Volume` class](#the-volume-class) for more construction detail.
-
-### Usage
+### Reading and setting values
 
 Values can be read and set via their keys as described in the base [`Volume` class](#the-volume-class), but `Penteract` also provides `get()` and `set()` helper functions:
 

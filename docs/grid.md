@@ -2,6 +2,8 @@
 
 The `Grid` class is a wrapper around the [`Volume` class](/volume) to simplify the creation of two-dimensional volumes.
 
+All the base functionality, such as default values, key accessors and iteration, is inherited by `Grid`.
+
 ## Construction
 
 `Grid` requires three generic types:
@@ -18,12 +20,9 @@ from nvalues import Grid
 grid = Grid[str, int, bool]()
 ```
 
-See the base [`Volume` class](/volume) for more construction detail.
-
-## Usage
+## Reading and setting values
 
 Values can be read and set via their keys as described in the base [`Volume` class](/volume), but `Grid` also provides `get()` and `set()` helper functions:
-
 
 ```python
 from nvalues import Grid

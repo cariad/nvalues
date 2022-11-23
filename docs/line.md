@@ -2,6 +2,8 @@
 
 The `Line` class is a wrapper around the [`Volume` class](/volume) to simplify the creation of one-dimensional volumes.
 
+All the base functionality, such as default values, key accessors and iteration, is inherited by `Line`.
+
 ## Construction
 
 `Line` requires two generic types:
@@ -17,12 +19,9 @@ from nvalues import Line
 line = Line[int, str]()
 ```
 
-See the base [`Volume` class](/volume) for more construction detail.
-
-## Usage
+## Reading and setting values
 
 Values can be read and set via their keys as described in the base [`Volume` class](/volume), but `Line` also provides `get()` and `set()` helper functions:
-
 
 ```python
 from nvalues import Line
