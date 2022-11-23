@@ -5,6 +5,22 @@ from nvalues.volume import Volume
 class Grid(Volume[tuple[XKeyT, YKeyT], ValueT]):
     """
     A two-dimensional volume of values.
+
+    Three generic types are required:
+
+    1. `x` key type
+    1. `y` key type
+    1. Value type
+
+    For example, to create a `Grid` with `x` string keys, `y` integer keys and
+    boolean values:
+
+    ```python
+    grid = Grid[str, int, bool]()
+    ```
+
+    `default_value` is optional and defaults to none. Accessing a key without a
+    default value will provoke `NKeyError`.
     """
 
     def get(self, x: XKeyT, y: YKeyT) -> ValueT:

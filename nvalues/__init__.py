@@ -1,5 +1,9 @@
 """
 nvalues is a Python package for working with n-dimensional volumes of data.
+
+&copy; 2022 Cariad Eccleston and released under the MIT License.
+
+For usage and support, see https://nvalues.dev.
 """
 
 from importlib.resources import files

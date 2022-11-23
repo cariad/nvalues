@@ -86,6 +86,14 @@ def test_3d(key: tuple[int, int, int], expect: str) -> None:
     assert v[key] == expect
 
 
+def test_clear_default() -> None:
+    v = Volume[tuple[int, int], str]("default")
+    v.clear_default()
+
+    with raises(NKeyError):
+        _ = v[0, 0]
+
+
 def test_default__get() -> None:
     assert Volume[tuple[int], str]("default").default == "default"
 

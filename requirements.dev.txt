@@ -1,4 +1,6 @@
 isort~=5.10
+mkdocs~=1.4
+mkdocs-material~=8.5
 pip~=22.3
 pytest~=7.2
 pytest-cov~=4.0

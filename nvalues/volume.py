@@ -7,6 +7,30 @@ from nvalues.types import KeysT, ValueT
 class Volume(Generic[KeysT, ValueT]):
     """
     An n-dimensional volume of values.
+
+    Two generic types are required:
+
+    1. Tuple of key types
+    2. Value type
+
+    For example, to create a spreadsheet of floats with `x` string keys and `y`
+    integer keys:
+
+    ```python
+    volume = Volume[tuple[str, int], float]()
+    ```
+
+    `default_value` is optional and defaults to none. Accessing a key without a
+    default value will provoke `NKeyError`.
+
+    Values are read and set via their keys. For example:
+
+    ```python
+    volume = Volume[tuple[str, int], float]()
+    volume["A", 0] = 1.2
+    print(volume["A", 0])
+    # 1.2
+    ```
     """
 
     class NullDefaultValue:
@@ -51,8 +75,19 @@ class Volume(Generic[KeysT, ValueT]):
 
         context[keys[-1]] = value
 
+    def clear_default(self) -> None:
+        """
+        Clears the default value.
+        """
+
+        self._default = Volume.NullDefaultValue()
+
     @property
     def default(self) -> ValueT:
+        """
+        Default value to return when accessing a key that doesn't exist.
+        """
+
         if isinstance(self._default, Volume.NullDefaultValue):
             raise NoDefaultValue()
         return self._default
