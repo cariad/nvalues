@@ -108,7 +108,7 @@ See the base [`Volume` class](#the-volume-class) for more construction detail.
 
 ### Usage
 
-Values can be read and set via their keys as described in the base [`Volume`](#the-volume-class) class, but `Line` also provides `get()` and `set()` helper functions:
+Values can be read and set via their keys as described in the base [`Volume` class](#the-volume-class), but `Line` also provides `get()` and `set()` helper functions:
 
 
 ```python
@@ -144,7 +144,7 @@ See the base [`Volume` class](#the-volume-class) for more construction detail.
 
 ### Usage
 
-Values can be read and set via their keys as described in the base [`Volume`](#the-volume-class) class, but `Grid` also provides `get()` and `set()` helper functions:
+Values can be read and set via their keys as described in the base [`Volume` class](#the-volume-class), but `Grid` also provides `get()` and `set()` helper functions:
 
 
 ```python
@@ -181,7 +181,7 @@ See the base [`Volume` class](#the-volume-class) for more construction detail.
 
 ### Usage
 
-Values can be read and set via their keys as described in the base [`Volume`](/volume) class, but `Cube` also provides `get()` and `set()` helper functions:
+Values can be read and set via their keys as described in the base [`Volume` class](/volume), but `Cube` also provides `get()` and `set()` helper functions:
 
 
 ```python
@@ -219,7 +219,7 @@ See the base [`Volume` class](#the-volume-class) for more construction detail.
 
 ### Usage
 
-Values can be read and set via their keys as described in the base [`Volume`](#the-volume-class) class, but `Tesseract` also provides `get()` and `set()` helper functions:
+Values can be read and set via their keys as described in the base [`Volume` class](#the-volume-class), but `Tesseract` also provides `get()` and `set()` helper functions:
 
 ```python
 from nvalues import Tesseract
@@ -257,7 +257,7 @@ See the base [`Volume` class](#the-volume-class) for more construction detail.
 
 ### Usage
 
-Values can be read and set via their keys as described in the base [`Volume`](#the-volume-class) class, but `Penteract` also provides `get()` and `set()` helper functions:
+Values can be read and set via their keys as described in the base [`Volume` class](#the-volume-class), but `Penteract` also provides `get()` and `set()` helper functions:
 
 ```python
 from nvalues import Penteract

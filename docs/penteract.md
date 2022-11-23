@@ -25,7 +25,7 @@ See the base [`Volume` class](/volume) for more construction detail.
 
 ## Usage
 
-Values can be read and set via their keys as described in the base [`Volume`](/volume) class, but `Penteract` also provides `get()` and `set()` helper functions:
+Values can be read and set via their keys as described in the base [`Volume` class](/volume), but `Penteract` also provides `get()` and `set()` helper functions:
 
 ```python
 from nvalues import Penteract
