@@ -22,9 +22,10 @@ class Penteract(Volume[tuple[VKeyT, WKeyT, XKeyT, YKeyT, ZKeyT], ValueT]):
     penteract = Penteract[int, str, str, int, float, bool]()
     ```
 
-    `default` describes the optional default value to return if a non-existent
-    key is read. `NKeyError` will be raised if a non-existent key is read
-    without a default value.
+    `default` is the default value to return if a non-existent key is read.
+    `default_maker` is a function that returns the default value for a given
+    key. You must specify neither or one of these; not both. `NKeyError` will
+    be raised if a non-existent key is read without a default value.
 
     `key_validator` is an optional function that validates if a key is valid.
     The function must raise an exception if the key is invalid. `InvalidKey`
