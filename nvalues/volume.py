@@ -1,7 +1,12 @@
 from typing import Any, Dict, Generic, Iterator, List, Optional, Sequence, cast
 
-from nvalues.exceptions import KeyIndexOutOfRange, NKeyError, NoDefaultValue
-from nvalues.types import KeysT, ValueT
+from nvalues.exceptions import (
+    InvalidKey,
+    KeyIndexOutOfRange,
+    NKeyError,
+    NoDefaultValue,
+)
+from nvalues.types import KeysT, KeyValidator, ValueT
 from nvalues.value import Value
 
 
@@ -21,43 +26,12 @@ class Volume(Generic[KeysT, ValueT]):
     volume = Volume[tuple[str, int], float]()
     ```
 
-    `default_value` is optional and defaults to none. Accessing a key without a
-    default value will provoke `NKeyError`.
+    `default_value` is optional and defaults to none. `NKeyError` will be
+    raised if a key without a value or default value is read.
 
-    Values are read, set and deleted via their keys. For example:
-
-    ```python
-    from nvalues import Volume
-
-    volume = Volume[tuple[str, int], float](0)
-
-    volume["A", 0] = 1.2
-    print(volume["A", 0])
-    # 1.2
-
-    del volume["A", 0]
-    print(volume["A", 0])
-    # 0
-    ```
-
-    Values can also be iterated. For example:
-
-    ```python
-    from nvalues import Volume
-
-    volume = Volume[tuple[int, int], str]()
-
-    volume[0, 0] = "zero-zero"
-    volume[4, 0] = "four-zero"
-    volume[0, 4] = "zero-four"
-
-    for item in volume:
-        print(f"Found {item.value} at {item.key}")
-
-    # Found zero-zero at (0, 0)
-    # Found zero-four at (0, 4)
-    # Found four-zero at (4, 0)
-    ```
+    `key_validator` is an optional function that validates if a key is valid.
+    The function must raise an exception if the key is invalid. `InvalidKey`
+    will be raised if an invalid key is accessed.
     """
 
     class NullDefaultValue:
@@ -69,27 +43,36 @@ class Volume(Generic[KeysT, ValueT]):
     def __init__(
         self,
         default_value: ValueT | NullDefaultValue = NullDefaultValue(),
+        key_validator: Optional[KeyValidator[KeysT]] = None,
     ) -> None:
         self._default = default_value
         self._dim_len: Optional[int] = None  # Unknown until a value is added.
         self._values: Dict[Any, Any] = {}
 
-    def __delitem__(self, keys: KeysT) -> None:
-        self._delete_key(keys)
+        self.key_validator = key_validator
+        """
+        Key validator. Must raise an exception if the specified key is invalid.
+        """
 
-    def __getitem__(self, keys: KeysT) -> ValueT:
+    def __delitem__(self, key: KeysT) -> None:
+        self.validate_key(key)
+        self._delete_key(key)
+
+    def __getitem__(self, key: KeysT) -> ValueT:
+        self.validate_key(key)
+
         context = self._values
         key_index = 0
 
         try:
-            for index, key in enumerate(keys):
+            for index, curr_key in enumerate(key):
                 key_index = index
-                context = context[key]
+                context = context[curr_key]
         except KeyError:
             try:
                 return self.default
             except NoDefaultValue as no_default_value:
-                raise NKeyError(keys, key_index) from no_default_value
+                raise NKeyError(key, key_index) from no_default_value
 
         return cast(ValueT, context)
 
@@ -128,40 +111,42 @@ class Volume(Generic[KeysT, ValueT]):
             # over the indexes if we need to.
             indexes[-1] += 1
 
-    def __setitem__(self, keys: KeysT, value: ValueT) -> None:
-        self._dim_len = len(keys)
+    def __setitem__(self, key: KeysT, value: ValueT) -> None:
+        self.validate_key(key)
+
+        self._dim_len = len(key)
 
         context = self._values
         index = 0
 
-        while index < len(keys) - 1:
-            key = keys[index]
-            if key not in context:
-                context[key] = {}
-            context = context[key]
+        while index < len(key) - 1:
+            curr_key = key[index]
+            if curr_key not in context:
+                context[curr_key] = {}
+            context = context[curr_key]
             index += 1
 
-        context[keys[-1]] = value
+        context[key[-1]] = value
 
-    def _delete_key(self, keys: Sequence[Any]) -> None:
-        if not keys:
+    def _delete_key(self, key: Sequence[Any]) -> None:
+        if not key:
             # Our deletes are idempotent so fail gracefully.
             return
 
         context = self._values
 
         try:
-            for key in keys[:-1]:
-                context = context[key]
+            for curr_key in key[:-1]:
+                context = context[curr_key]
         except KeyError:
             # Our deletes are idempotent so fail gracefully.
             return
 
-        del context[keys[-1]]
+        del context[key[-1]]
 
         # If this dict is empty now then we can delete it from its parent.
         if not context:
-            self._delete_key(keys[:-1])
+            self._delete_key(key[:-1])
 
     def _from_index(
         self,
@@ -218,3 +203,19 @@ class Volume(Generic[KeysT, ValueT]):
     @default.setter
     def default(self, value: ValueT) -> None:
         self._default = value
+
+    def validate_key(self, key: KeysT) -> None:
+        """
+        Validates that `key` is valid. Has no effect if a key validator hasn't
+        been set.
+
+        Raises `InvalidKey` if the key is invalid.
+        """
+
+        if not self.key_validator:
+            return
+
+        try:
+            self.key_validator(key)
+        except Exception as ex:
+            raise InvalidKey(key, ex) from ex
