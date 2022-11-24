@@ -73,7 +73,7 @@ Values are read, set and deleted via their keys.
 ```python
 from nvalues import Volume
 
-volume = Volume[tuple[str, int], float](0)
+volume = Volume[tuple[str, int], float](default=0)
 
 volume["A", 0] = 1.2
 print(volume["A", 0])
