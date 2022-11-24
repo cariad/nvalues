@@ -1,12 +1,7 @@
 from typing import Any, Dict, Generic, Iterator, List, Optional, Sequence, cast
 
-from nvalues.exceptions import (
-    InvalidKey,
-    KeyIndexOutOfRange,
-    NKeyError,
-    NoDefaultValue,
-)
-from nvalues.types import KeysT, KeyValidator, ValueT
+from nvalues.exceptions import InvalidKey, KeyIndexOutOfRange, NKeyError
+from nvalues.types import KeysT, KeyValidator, ValueMaker, ValueT
 from nvalues.value import Value
 
 
@@ -26,8 +21,10 @@ class Volume(Generic[KeysT, ValueT]):
     volume = Volume[tuple[str, int], float]()
     ```
 
-    `default_value` is optional and defaults to none. `NKeyError` will be
-    raised if a key without a value or default value is read.
+    `default` is the default value to return if a non-existent key is read.
+    `default_maker` is a function that returns the default value for a given
+    key. You must specify neither or one of these; not both. `NKeyError` will
+    be raised if a non-existent key is read without a default value.
 
     `key_validator` is an optional function that validates if a key is valid.
     The function must raise an exception if the key is invalid. `InvalidKey`
@@ -42,10 +39,28 @@ class Volume(Generic[KeysT, ValueT]):
 
     def __init__(
         self,
-        default_value: ValueT | NullDefaultValue = NullDefaultValue(),
+        default: ValueT | NullDefaultValue = NullDefaultValue(),
+        default_maker: Optional[ValueMaker[KeysT, ValueT]] = None,
         key_validator: Optional[KeyValidator[KeysT]] = None,
     ) -> None:
-        self._default = default_value
+
+        self._add_defaults = default_maker is not None
+        """
+        Add default values to the volume as they are encountered.
+        """
+
+        if isinstance(default, Volume.NullDefaultValue):
+            self._default_maker = default_maker
+        else:
+            if default_maker:
+                msg = "Cannot accept a default value and default value maker"
+                raise ValueError(msg)
+
+            def return_default(_: KeysT) -> ValueT:
+                return cast(ValueT, default)
+
+            self._default_maker = return_default
+
         self._dim_len: Optional[int] = None  # Unknown until a value is added.
         self._values: Dict[Any, Any] = {}
 
@@ -68,11 +83,16 @@ class Volume(Generic[KeysT, ValueT]):
             for index, curr_key in enumerate(key):
                 key_index = index
                 context = context[curr_key]
-        except KeyError:
-            try:
-                return self.default
-            except NoDefaultValue as no_default_value:
-                raise NKeyError(key, key_index) from no_default_value
+        except KeyError as key_error:
+            if self._default_maker is None:
+                raise NKeyError(key, key_index) from key_error
+
+            default = self._default_maker(key)
+
+            if self._add_defaults:
+                self[key] = default
+
+            return default
 
         return cast(ValueT, context)
 
@@ -182,27 +202,6 @@ class Volume(Generic[KeysT, ValueT]):
         )
 
         return [key, *child_keys], value
-
-    def clear_default(self) -> None:
-        """
-        Clears the default value.
-        """
-
-        self._default = Volume.NullDefaultValue()
-
-    @property
-    def default(self) -> ValueT:
-        """
-        Default value to return when accessing a key that doesn't exist.
-        """
-
-        if isinstance(self._default, Volume.NullDefaultValue):
-            raise NoDefaultValue()
-        return self._default
-
-    @default.setter
-    def default(self, value: ValueT) -> None:
-        self._default = value
 
     def validate_key(self, key: KeysT) -> None:
         """

@@ -15,3 +15,8 @@ KeyValidator = Callable[[KeysT], None]
 """
 Key validator. Must raise any exception if the key is invalid.
 """
+
+ValueMaker = Callable[[KeysT], ValueT]
+"""
+Returns a default value for a given key.
+"""

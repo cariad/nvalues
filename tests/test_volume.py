@@ -1,7 +1,7 @@
 from pytest import mark, raises
 
 from nvalues import Value, Volume
-from nvalues.exceptions import InvalidKey, NKeyError, NoDefaultValue
+from nvalues.exceptions import InvalidKey, NKeyError
 
 
 def validate_key(key: tuple[int, int]) -> None:
@@ -42,7 +42,7 @@ def test_1d(key: tuple[int], expect: str) -> None:
 def test_2d(key: tuple[int, int], expect: str) -> None:
     """Test two-dimensional setting and getting."""
 
-    v = Volume[tuple[int, int], str]("default")
+    v = Volume[tuple[int, int], str](default="default")
     v[0, 0] = "zero-zero"
     v[0, 1] = "zero-one"
     v[1, 0] = "one-zero"
@@ -75,7 +75,7 @@ def test_2d(key: tuple[int, int], expect: str) -> None:
 def test_3d(key: tuple[int, int, int], expect: str) -> None:
     """Test three-dimensional setting and getting."""
 
-    v = Volume[tuple[int, int, int], str]("default")
+    v = Volume[tuple[int, int, int], str](default="default")
 
     v[0, 0, 0] = "zero-zero-zero"
     v[0, 0, 1] = "zero-zero-one"
@@ -92,46 +92,21 @@ def test_3d(key: tuple[int, int, int], expect: str) -> None:
     assert v[key] == expect
 
 
-def test_clear_default() -> None:
-    v = Volume[tuple[int, int], str]("default")
-    v.clear_default()
-
-    with raises(NKeyError):
-        _ = v[0, 0]
-
-
-def test_default__get() -> None:
-    assert Volume[tuple[int], str]("default").default == "default"
-
-
-def test_default__get_unset() -> None:
-    with raises(NoDefaultValue) as ex:
-        _ = Volume[tuple[int], str]().default
-
-    assert str(ex.value) == "The volume does not have a default value"
-
-
-def test_default__set() -> None:
-    v = Volume[tuple[int], str]()
-    v.default = "default"
-    assert v.default == "default"
-
-
 def test_delete__empty() -> None:
-    v = Volume[tuple[int, int], str]("default")
+    v = Volume[tuple[int, int], str](default="default")
     v[0, 0] = "0-0"
     del v[0, 0]
     assert v[0, 0] == "default"
 
 
 def test_delete__idempotent() -> None:
-    v = Volume[tuple[int, int], str]("default")
+    v = Volume[tuple[int, int], str](default="default")
     del v[0, 0]
     assert v[0, 0] == "default"
 
 
 def test_delete__last() -> None:
-    v = Volume[tuple[int, int], str]("default")
+    v = Volume[tuple[int, int], str](default="default")
     v[0, 0] = "0-0"
     v[1, 0] = "1-0"
     v[1, 1] = "1-1"
@@ -144,7 +119,7 @@ def test_delete__last() -> None:
 
 
 def test_delete__one() -> None:
-    v = Volume[tuple[int, int], str]("default")
+    v = Volume[tuple[int, int], str](default="default")
     v[0, 0] = "0-0"
     v[0, 1] = "0-1"
     v[1, 0] = "1-0"
@@ -180,6 +155,32 @@ def test_getitem__no_default(keys: tuple[int, int, int], expect: str) -> None:
         _ = v[(keys)]
 
     assert str(ex.value) == expect
+
+
+def test_getitem__with_default__is_not_added() -> None:
+    v = Volume[tuple[int, int], str](default="foo")
+    assert v[7, 9] == "foo"
+    assert not list(v)
+
+
+def test_getitem__with_default_maker() -> None:
+    def make_default(key: tuple[int, int]) -> str:
+        return f"value={str(key)}"
+
+    v = Volume[tuple[int, int], str](default_maker=make_default)
+    assert v[7, 9] == "value=(7, 9)"
+
+
+def test_getitem__with_default_maker__is_added() -> None:
+    def make_default(key: tuple[int, int]) -> str:
+        return f"value={str(key)}"
+
+    v = Volume[tuple[int, int], str](default_maker=make_default)
+    assert v[7, 9] == "value=(7, 9)"
+
+    assert list(v) == [
+        Value((7, 9), "value=(7, 9)"),
+    ]
 
 
 def test_getitem__with_key_validator() -> None:
