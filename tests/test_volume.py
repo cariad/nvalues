@@ -1,7 +1,13 @@
 from pytest import mark, raises
 
 from nvalues import Value, Volume
-from nvalues.exceptions import NKeyError, NoDefaultValue
+from nvalues.exceptions import InvalidKey, NKeyError, NoDefaultValue
+
+
+def validate_key(key: tuple[int, int]) -> None:
+    x = key[0]
+    if x not in [0, 1]:
+        raise ValueError(f"x {x} must be 0 or 1")
 
 
 @mark.parametrize(
@@ -152,6 +158,12 @@ def test_delete__one() -> None:
     assert v[1, 1] == "1-1"
 
 
+def test_delete__with_key_validator() -> None:
+    v = Volume[tuple[int, int], str](key_validator=validate_key)
+    with raises(InvalidKey):
+        del v[2, 0]
+
+
 @mark.parametrize(
     "keys, expect",
     [
@@ -168,6 +180,12 @@ def test_getitem__no_default(keys: tuple[int, int, int], expect: str) -> None:
         _ = v[(keys)]
 
     assert str(ex.value) == expect
+
+
+def test_getitem__with_key_validator() -> None:
+    v = Volume[tuple[int, int], str](key_validator=validate_key)
+    with raises(InvalidKey):
+        _ = v[2, 0]
 
 
 def test_iter() -> None:
@@ -187,3 +205,24 @@ def test_iter() -> None:
 
 def test_iter__empty() -> None:
     assert not list(Volume[tuple[int, int, int], str]())
+
+
+def test_setitem__with_key_validator() -> None:
+    v = Volume[tuple[int, int], str](key_validator=validate_key)
+    with raises(InvalidKey):
+        v[2, 0] = "foo"
+
+
+def test_validate_key__fail() -> None:
+    v = Volume[tuple[int, int], str](key_validator=validate_key)
+    with raises(InvalidKey) as ex:
+        v.validate_key((2, 0))
+
+    assert str(ex.value) == "Key (2, 0) failed validation (x 2 must be 0 or 1)"
+    assert isinstance(ex.value.exception, ValueError)
+    assert ex.value.key == (2, 0)
+
+
+def test_validate_key__pass() -> None:
+    v = Volume[tuple[int, int], str](key_validator=validate_key)
+    v.validate_key((0, 0))

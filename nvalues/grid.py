@@ -19,8 +19,12 @@ class Grid(Volume[tuple[XKeyT, YKeyT], ValueT]):
     grid = Grid[str, int, bool]()
     ```
 
-    `default_value` is optional and defaults to none. Accessing a key without a
-    default value will provoke `NKeyError`.
+    `default_value` is optional and defaults to none. `NKeyError` will be
+    raised if a key without a value or default value is read.
+
+    `key_validator` is an optional function that validates if a key is valid.
+    The function must raise an exception if the key is invalid. `InvalidKey`
+    will be raised if an invalid key is accessed.
     """
 
     def delete(self, x: XKeyT, y: YKeyT) -> None:

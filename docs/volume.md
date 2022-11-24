@@ -58,6 +58,38 @@ print(volume["A", 0])
 # 0
 ```
 
+## Key validation
+
+A `Volume` can be configured to reject invalid keys if a validator is passed in the initialiser or set on the `key_validator` property.
+
+If set, the key validator is a function that examines the key and raises any exception if it's invalid. Any attempts to access an invalid key will result in `InvalidKey` being raised.
+
+```python
+from nvalues import Volume
+from nvalues.exceptions import InvalidKey
+
+max_x = 3
+max_y = 4
+
+def check_key_range(key: tuple[int, int]) -> None:
+    x = key[0]
+    if x < 0 or x > max_x:
+        raise ValueError(f"x {x} must be 0-{max_x} inclusive")
+
+    y = key[1]
+    if y < 0 or y > max_y:
+        raise ValueError(f"y {y} must be 0-{max_y} inclusive")
+
+volume = Volume[tuple[int, int], str](key_validator=check_key_range)
+
+try:
+    volume[0, 17] = "foo"
+except InvalidKey as ex:
+    print(ex)
+
+# Key (0, 17) failed validation (y 17 must be 0-4 inclusive)
+```
+
 ## Iterating values
 
 `Volume` natively supports iteration and will yield the key and value for every item it holds.

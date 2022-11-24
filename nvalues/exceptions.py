@@ -1,6 +1,33 @@
 from typing import Any
 
 
+class InvalidKey(LookupError):
+    """
+    Raised when a key fails a validation check.
+    """
+
+    def __init__(self, key: tuple[Any, ...], exception: Exception) -> None:
+        super().__init__(f"Key {key} failed validation ({exception})")
+        self._exception = exception
+        self._key = key
+
+    @property
+    def exception(self) -> Exception:
+        """
+        Validation exception.
+        """
+
+        return self._exception
+
+    @property
+    def key(self) -> tuple[Any, ...]:
+        """
+        The key that failed validation.
+        """
+
+        return self._key
+
+
 class KeyIndexOutOfRange(LookupError):
     """
     Raised when requesting a value by its index and that index is out of range.
