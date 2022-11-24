@@ -25,6 +25,13 @@ class Tesseract(Volume[tuple[WKeyT, XKeyT, YKeyT, ZKeyT], ValueT]):
     default value will provoke `NKeyError`.
     """
 
+    def delete(self, w: WKeyT, x: XKeyT, y: YKeyT, z: ZKeyT) -> None:
+        """
+        Deletes the key `w, x, y, z`.
+        """
+
+        del self[w, x, y, z]
+
     def get(self, w: WKeyT, x: XKeyT, y: YKeyT, z: ZKeyT) -> ValueT:
         """
         Gets the value of key `w, x, y, z`.

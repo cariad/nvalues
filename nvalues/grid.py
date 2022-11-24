@@ -23,6 +23,13 @@ class Grid(Volume[tuple[XKeyT, YKeyT], ValueT]):
     default value will provoke `NKeyError`.
     """
 
+    def delete(self, x: XKeyT, y: YKeyT) -> None:
+        """
+        Deletes the key `x, y`.
+        """
+
+        del self[x, y]
+
     def get(self, x: XKeyT, y: YKeyT) -> ValueT:
         """
         Gets the value of key `x, y`.

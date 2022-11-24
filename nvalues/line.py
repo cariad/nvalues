@@ -21,6 +21,13 @@ class Line(Volume[tuple[XKeyT], ValueT]):
     default value will provoke `NKeyError`.
     """
 
+    def delete(self, x: XKeyT) -> None:
+        """
+        Deletes the key `x`.
+        """
+
+        del self[(x,)]
+
     def get(self, x: XKeyT) -> ValueT:
         """
         Gets the value of key `x`.

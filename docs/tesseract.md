@@ -22,15 +22,19 @@ from nvalues import Tesseract
 tesseract = Tesseract[str, str, int, float, bool]()
 ```
 
-## Reading and setting values
+## Reading, setting and deleting values
 
-Values can be read and set via their keys as described in the base [`Volume` class](/volume), but `Tesseract` also provides `get()` and `set()` helper functions:
+Values can be read, set and deleted via their keys as described in the base [`Volume` class](/volume), but `Tesseract` also provides `get()`, `set()` and `delete()` helper functions:
 
 ```python
 from nvalues import Tesseract
 
-tesseract = Tesseract[str, str, int, float, bool]()
+tesseract = Tesseract[str, str, int, float, bool](False)
 tesseract.set("A", "B", 0, 1.2, True)
 print(tesseract.get("A", "B", 0, 1.2))
 # True
+
+tesseract.delete("A", "B", 0, 1.2)
+print(tesseract.get("A", "B", 0, 1.2))
+# False
 ```

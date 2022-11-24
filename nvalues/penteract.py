@@ -26,6 +26,13 @@ class Penteract(Volume[tuple[VKeyT, WKeyT, XKeyT, YKeyT, ZKeyT], ValueT]):
     default value will provoke `NKeyError`.
     """
 
+    def delete(self, v: VKeyT, w: WKeyT, x: XKeyT, y: YKeyT, z: ZKeyT) -> None:
+        """
+        Deletes the key `v, w, x, y, z`.
+        """
+
+        del self[v, w, x, y, z]
+
     def get(self, v: VKeyT, w: WKeyT, x: XKeyT, y: YKeyT, z: ZKeyT) -> ValueT:
         """
         Gets the value of key `v, w, x, y, z`.

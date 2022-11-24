@@ -21,15 +21,20 @@ from nvalues import Cube
 cube = Cube[str, int, float, bool]()
 ```
 
-## Reading and setting values
+## Reading, setting and deleting values
 
-Values can be read and set via their keys as described in the base [`Volume` class](/volume), but `Cube` also provides `get()` and `set()` helper functions:
+Values can be read, set and deleted via their keys as described in the base [`Volume` class](/volume), but `Cube` also provides `get()`, `set()` and `delete()` helper functions:
 
 ```python
 from nvalues import Cube
 
-cube = Cube[str, int, float, bool]()
+cube = Cube[str, int, float, bool](False)
+
 cube.set("A", 0, 1.2, True)
 print(cube.get("A", 0, 1.2))
 # True
+
+cube.delete("A", 0, 1.2)
+print(cube.get("A", 0, 1.2))
+# False
 ```

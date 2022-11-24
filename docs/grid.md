@@ -20,15 +20,19 @@ from nvalues import Grid
 grid = Grid[str, int, bool]()
 ```
 
-## Reading and setting values
+## Reading, setting and deleting values
 
-Values can be read and set via their keys as described in the base [`Volume` class](/volume), but `Grid` also provides `get()` and `set()` helper functions:
+Values can be read, set and deleted via their keys as described in the base [`Volume` class](/volume), but `Grid` also provides `get()`, `set()` and `delete()` helper functions:
 
 ```python
 from nvalues import Grid
 
-grid = Grid[str, int, bool]()
+grid = Grid[str, int, bool](False)
 grid.set("A", 0, True)
 print(grid.get("A", 0))
 # True
+
+grid.delete("A", 0)
+print(grid.get("A", 0))
+# False
 ```
