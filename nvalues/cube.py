@@ -20,8 +20,9 @@ class Cube(Volume[tuple[XKeyT, YKeyT, ZKeyT], ValueT]):
     cube = Cube[str, int, float, bool]()
     ```
 
-    `default_value` is optional and defaults to none. `NKeyError` will be
-    raised if a key without a value or default value is read.
+    `default` describes the optional default value to return if a non-existent
+    key is read. `NKeyError` will be raised if a non-existent key is read
+    without a default value.
 
     `key_validator` is an optional function that validates if a key is valid.
     The function must raise an exception if the key is invalid. `InvalidKey`

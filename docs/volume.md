@@ -33,7 +33,7 @@ volume = Volume[tuple[int, str, float], bool]()
 An optional default value can be specified in the initialiser:
 
 ```python
-volume = Volume[tuple[int, int], str](default_value="")
+volume = Volume[tuple[int, int], str](value="")
 ```
 
 If you request a key that doesn't exist then this default value will be returned. If you request a key that doesn't exist without a default value set then the volume will raise `nvalues.exceptions.NKeyError`.

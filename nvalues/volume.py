@@ -26,8 +26,9 @@ class Volume(Generic[KeysT, ValueT]):
     volume = Volume[tuple[str, int], float]()
     ```
 
-    `default_value` is optional and defaults to none. `NKeyError` will be
-    raised if a key without a value or default value is read.
+    `default` describes the optional default value to return if a non-existent
+    key is read. `NKeyError` will be raised if a non-existent key is read
+    without a default value.
 
     `key_validator` is an optional function that validates if a key is valid.
     The function must raise an exception if the key is invalid. `InvalidKey`
@@ -42,10 +43,10 @@ class Volume(Generic[KeysT, ValueT]):
 
     def __init__(
         self,
-        default_value: ValueT | NullDefaultValue = NullDefaultValue(),
+        default: ValueT | NullDefaultValue = NullDefaultValue(),
         key_validator: Optional[KeyValidator[KeysT]] = None,
     ) -> None:
-        self._default = default_value
+        self._default = default
         self._dim_len: Optional[int] = None  # Unknown until a value is added.
         self._values: Dict[Any, Any] = {}
 
