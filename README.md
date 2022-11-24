@@ -4,7 +4,7 @@
 
 **NValues** is a Python package for working with _n_-dimensional volumes of data.
 
-For full documentation, see **[nvalues.dev](https://nvalues.dev)**
+Full documentation is online at **[nvalues.dev](https://nvalues.dev)**.
 
 ## Installation
 
@@ -16,11 +16,11 @@ pip install nvalues
 
 ## The `Volume` class
 
-The `Volume` class represents a strongly-typed _n_-dimensional volume of values.
+The [`Volume` class](https://nvalues.dev/volume) represents a strongly-typed _n_-dimensional volume of values.
 
 ### Construction
 
-The `Volume` class requires two generic types:
+You must pass two generic types on construction:
 
 1. Tuple of any number of key types
 2. Value type
@@ -67,7 +67,7 @@ print(volume["A", 0])
 
 ### Iterating values
 
-`Volume` natively supports iteration and will yield the key and value for every item.
+Native iteration yields the key and value for each item in the volume.
 
 ```python
 from nvalues import Volume
