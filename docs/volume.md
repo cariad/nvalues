@@ -28,17 +28,36 @@ volume = Volume[tuple[str, int], float]()
 volume = Volume[tuple[int, str, float], bool]()
 ```
 
-## Default value
+## Default values
 
-An optional default value can be specified in the initialiser:
+By default, volumes will raise `nvalues.exceptions.NKeyError` if you try to read a key that doesn't exist.
 
-```python
-volume = Volume[tuple[int, int], str](value="")
-```
+To return a default value instead, you can either:
 
-If you request a key that doesn't exist then this default value will be returned. If you request a key that doesn't exist without a default value set then the volume will raise `nvalues.exceptions.NKeyError`.
+- Pass the default value as the `default` argument:
 
-A default value can be set after construction via the `default` property and cleared by calling `clear_default()`.
+    ```python
+    from nvalues import Volume
+
+    volume = Volume[tuple[int, int], str](default="default")
+    print(volume[0, 0])
+    # "default"
+    ```
+
+- Pass a function that generates a default value as the `default_maker` argument:
+
+    ```python
+    from nvalues import Volume
+
+    def make_default(key: tuple[int, int]) -> str:
+        return f"default for {key}"
+
+    volume = Volume[tuple[int, int], str](default_maker=make_default)
+    print(volume[0, 0])
+    # "default for (0, 0)"
+    ```
+
+Default values generated at runtime will be added to the volume, while static defaults will not.
 
 ## Reading, setting and deleting values
 
