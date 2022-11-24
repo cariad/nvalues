@@ -1,4 +1,4 @@
-from typing import Any, Dict, Generic, Iterator, List, Optional, cast
+from typing import Any, Dict, Generic, Iterator, List, Optional, Sequence, cast
 
 from nvalues.exceptions import KeyIndexOutOfRange, NKeyError, NoDefaultValue
 from nvalues.types import KeysT, ValueT
@@ -24,13 +24,39 @@ class Volume(Generic[KeysT, ValueT]):
     `default_value` is optional and defaults to none. Accessing a key without a
     default value will provoke `NKeyError`.
 
-    Values are read and set via their keys. For example:
+    Values are read, set and deleted via their keys. For example:
 
     ```python
-    volume = Volume[tuple[str, int], float]()
+    from nvalues import Volume
+
+    volume = Volume[tuple[str, int], float](0)
+
     volume["A", 0] = 1.2
     print(volume["A", 0])
     # 1.2
+
+    del volume["A", 0]
+    print(volume["A", 0])
+    # 0
+    ```
+
+    Values can also be iterated. For example:
+
+    ```python
+    from nvalues import Volume
+
+    volume = Volume[tuple[int, int], str]()
+
+    volume[0, 0] = "zero-zero"
+    volume[4, 0] = "four-zero"
+    volume[0, 4] = "zero-four"
+
+    for item in volume:
+        print(f"Found {item.value} at {item.key}")
+
+    # Found zero-zero at (0, 0)
+    # Found zero-four at (0, 4)
+    # Found four-zero at (4, 0)
     ```
     """
 
@@ -47,6 +73,9 @@ class Volume(Generic[KeysT, ValueT]):
         self._default = default_value
         self._dim_len: Optional[int] = None  # Unknown until a value is added.
         self._values: Dict[Any, Any] = {}
+
+    def __delitem__(self, keys: KeysT) -> None:
+        self._delete_key(keys)
 
     def __getitem__(self, keys: KeysT) -> ValueT:
         context = self._values
@@ -113,6 +142,26 @@ class Volume(Generic[KeysT, ValueT]):
             index += 1
 
         context[keys[-1]] = value
+
+    def _delete_key(self, keys: Sequence[Any]) -> None:
+        if not keys:
+            # Our deletes are idempotent so fail gracefully.
+            return
+
+        context = self._values
+
+        try:
+            for key in keys[:-1]:
+                context = context[key]
+        except KeyError:
+            # Our deletes are idempotent so fail gracefully.
+            return
+
+        del context[keys[-1]]
+
+        # If this dict is empty now then we can delete it from its parent.
+        if not context:
+            self._delete_key(keys[:-1])
 
     def _from_index(
         self,

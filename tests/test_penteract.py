@@ -1,7 +1,10 @@
-from nvalues import Penteract
+from .types import PenteractType
 
 
-def test() -> None:
-    penteract = Penteract[int, int, int, int, int, str]()
-    penteract.set(0, 0, 0, 0, 0, "foo")
+def test_delete(penteract: PenteractType) -> None:
+    penteract.delete(0, 0, 0, 0, 0)
+    assert penteract.get(0, 0, 0, 0, 0) == "default"
+
+
+def test_get(penteract: PenteractType) -> None:
     assert penteract.get(0, 0, 0, 0, 0) == "foo"

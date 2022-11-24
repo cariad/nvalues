@@ -40,17 +40,22 @@ If you request a key that doesn't exist then this default value will be returned
 
 A default value can be set after construction via the `default` property and cleared by calling `clear_default()`.
 
-## Reading and setting values
+## Reading, setting and deleting values
 
-Values are read and set via their keys. For example:
+Values are read, set and deleted via their keys. For example:
 
 ```python
 from nvalues import Volume
 
-volume = Volume[tuple[int, int], str]()
-volume[0, 0] = "zero"
-print(volume[0, 0])
-# "zero"
+volume = Volume[tuple[str, int], float](0)
+
+volume["A", 0] = 1.2
+print(volume["A", 0])
+# 1.2
+
+del volume["A", 0]
+print(volume["A", 0])
+# 0
 ```
 
 ## Iterating values

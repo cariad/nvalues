@@ -19,15 +19,20 @@ from nvalues import Line
 line = Line[int, str]()
 ```
 
-## Reading and setting values
+## Reading, setting and deleting values
 
-Values can be read and set via their keys as described in the base [`Volume` class](/volume), but `Line` also provides `get()` and `set()` helper functions:
+Values can be read, set and deleted via their keys as described in the base [`Volume` class](/volume), but `Line` also provides `get()`, `set()` and `delete()` helper functions:
 
 ```python
 from nvalues import Line
 
-line = Line[int, str]()
+line = Line[int, str]("default")
+
 line.set(0, "zero")
 print(line.get(0))
 # "zero"
+
+line.delete(0)
+print(line.get(0))
+# "default"
 ```

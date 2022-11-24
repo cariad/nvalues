@@ -1,7 +1,10 @@
-from nvalues import Cube
+from .types import CubeType
 
 
-def test() -> None:
-    cube = Cube[int, int, int, str]()
-    cube.set(0, 0, 0, "foo")
+def test_delete(cube: CubeType) -> None:
+    cube.delete(0, 0, 0)
+    assert cube.get(0, 0, 0) == "default"
+
+
+def test_get(cube: CubeType) -> None:
     assert cube.get(0, 0, 0) == "foo"

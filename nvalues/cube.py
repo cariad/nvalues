@@ -24,6 +24,13 @@ class Cube(Volume[tuple[XKeyT, YKeyT, ZKeyT], ValueT]):
     default value will provoke `NKeyError`.
     """
 
+    def delete(self, x: XKeyT, y: YKeyT, z: ZKeyT) -> None:
+        """
+        Deletes the key `x, y, z`.
+        """
+
+        del self[x, y, z]
+
     def get(self, x: XKeyT, y: YKeyT, z: ZKeyT) -> ValueT:
         """
         Gets the value of key `x, y, z`.

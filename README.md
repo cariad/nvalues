@@ -4,6 +4,8 @@
 
 **NValues** is a Python package for working with _n_-dimensional volumes of data.
 
+For full documentation, see **[nvalues.dev](https://nvalues.dev)**
+
 ## Installation
 
 **NValues** requires Python 3.9 or later and can be installed via [PyPI](https://pypi.org/project/nvalues/):
@@ -12,48 +14,21 @@
 pip install nvalues
 ```
 
-## Usage
-
-For example, to create a spreadsheet-like grid of float values with alphabetic `x` keys and integer `y` keys:
-
-```python
-from nvalues import Volume
-
-grid = Volume[tuple[str, int], float]()
-grid["A", 0] = 1.2
-grid["B", 1] = 1.4
-grid["C", 2] = 1.6
-
-print(grid["A", 0])
-# 1.2
-```
-
-See the [`Volume` class](#the-volume-class) for more detail, or if you don't need more than five dimensions then see the [`Line`](#the-line-class), [`Grid`](#the-grid-class), [`Cube`](#the-cube-class), [`Tesseract`](#the-tesseract-class) or [`Penteract`](#the-penteract-class) wrapper classes for an easier life.
-
 ## The `Volume` class
 
 The `Volume` class represents a strongly-typed _n_-dimensional volume of values.
 
 ### Construction
 
-`Volume` requires two generic types:
+The `Volume` class requires two generic types:
 
-1. Tuple of key types
+1. Tuple of any number of key types
 2. Value type
-
-For example:
 
 ```python
 from nvalues import Volume
 
-# A dictionary with integer keys and string values:
-volume = Volume[tuple[int], str]()
-
-# A grid with integer coordinates and string values:
-volume = Volume[tuple[int, int], str]()
-
-# A spreadsheet of floats with horizontal alphabetic keys and
-# vertical integer keys:
+# A spreadsheet-like grid of floats with string x and integer y keys:
 volume = Volume[tuple[str, int], float]()
 
 # A cube of booleans with integer x, string y and float z keys:
@@ -62,7 +37,7 @@ volume = Volume[tuple[int, str, float], bool]()
 
 ### Default value
 
-An optional default value can be specified in the initialiser:
+An optional default value can be specified in the initialiser.
 
 ```python
 volume = Volume[tuple[int, int], str](default_value="")
@@ -72,22 +47,27 @@ If you request a key that doesn't exist then this default value will be returned
 
 A default value can be set after construction via the `default` property and cleared by calling `clear_default()`.
 
-### Getting and setting values
+### Reading, setting and deleting values
 
-Values are read and set via their keys. For example:
+Values are read, set and deleted via their keys.
 
 ```python
 from nvalues import Volume
 
-volume = Volume[tuple[int, int], str]()
-volume[0, 0] = "zero"
-print(volume[0, 0])
-# "zero"
+volume = Volume[tuple[str, int], float](0)
+
+volume["A", 0] = 1.2
+print(volume["A", 0])
+# 1.2
+
+del volume["A", 0]
+print(volume["A", 0])
+# 0
 ```
 
 ### Iterating values
 
-`Volume` natively supports iteration and will yield the key and value for every item it holds.
+`Volume` natively supports iteration and will yield the key and value for every item.
 
 ```python
 from nvalues import Volume
@@ -106,187 +86,9 @@ for item in volume:
 # Found four-zero at (4, 0)
 ```
 
-## The `Line` class
+## Other classes
 
-The `Line` class is a wrapper around the [`Volume` class](#the-volume-class) to simplify the creation of one-dimensional volumes.
-
-All the base functionality, such as default values, key accessors and iteration, is inherited by `Line`.
-
-### Construction
-
-`Line` requires two generic types:
-
-1. Key type
-2. Value type
-
-For example, to create a `Line` with integer keys and string values:
-
-```python
-from nvalues import Line
-
-line = Line[int, str]()
-```
-
-### Reading and setting values
-
-Values can be read and set via their keys as described in the base [`Volume` class](#the-volume-class), but `Line` also provides `get()` and `set()` helper functions:
-
-```python
-from nvalues import Line
-
-line = Line[int, str]()
-line.set(0, "zero")
-print(line.get(0))
-# "zero"
-```
-
-## The `Grid` class
-
-The `Grid` class is a wrapper around the [`Volume` class](#the-volume-class) to simplify the creation of two-dimensional volumes.
-
-All the base functionality, such as default values, key accessors and iteration, is inherited by `Grid`.
-
-### Construction
-
-`Grid` requires three generic types:
-
-1. `x` key type
-1. `y` key type
-1. Value type
-
-For example, to create a `Grid` with `x` string keys, `y` integer keys and boolean values:
-
-```python
-from nvalues import Grid
-
-grid = Grid[str, int, bool]()
-```
-
-### Reading and setting values
-
-Values can be read and set via their keys as described in the base [`Volume` class](#the-volume-class), but `Grid` also provides `get()` and `set()` helper functions:
-
-
-```python
-from nvalues import Grid
-
-grid = Grid[str, int, bool]()
-grid.set("A", 0, True)
-print(grid.get("A", 0))
-# True
-```
-
-## The `Cube` class
-
-The `Cube` class is a wrapper around the [`Volume` class](#the-volume-class) to simplify the creation of three-dimensional volumes.
-
-All the base functionality, such as default values, key accessors and iteration, is inherited by `Cube`.
-
-### Construction
-
-`Cube` requires four generic types:
-
-1. `x` key type
-1. `y` key type
-1. `z` key type
-1. Value type
-
-For example, to create a `Cube` with `x` string keys, `y` integer keys, `z` float keys and boolean values:
-
-```python
-from nvalues import Cube
-
-cube = Cube[str, int, float, bool]()
-```
-
-### Reading and setting values
-
-Values can be read and set via their keys as described in the base [`Volume` class](#the-volume-class), but `Cube` also provides `get()` and `set()` helper functions:
-
-
-```python
-from nvalues import Cube
-
-cube = Cube[str, int, float, bool]()
-cube.set("A", 0, 1.2, True)
-print(cube.get("A", 0, 1.2))
-# True
-```
-
-## The `Tesseract` class
-
-The `Tesseract` class is a wrapper around the [`Volume` class](#the-volume-class) to simplify the creation of four-dimensional volumes.
-
-All the base functionality, such as default values, key accessors and iteration, is inherited by `Tesseract`.
-
-### Construction
-
-`Tesseract` requires five generic types:
-
-1. `w` key type
-1. `x` key type
-1. `y` key type
-1. `z` key type
-1. Value type
-
-For example, to create a `Tesseract` with `w` string keys, `x` string keys, `y` int keys, `z` float keys and boolean values:
-
-```python
-from nvalues import Tesseract
-
-tesseract = Tesseract[str, str, int, float, bool]()
-```
-
-### Reading and setting values
-
-Values can be read and set via their keys as described in the base [`Volume` class](#the-volume-class), but `Tesseract` also provides `get()` and `set()` helper functions:
-
-```python
-from nvalues import Tesseract
-
-tesseract = Tesseract[str, str, int, float, bool]()
-tesseract.set("A", "B", 0, 1.2, True)
-print(tesseract.get("A", "B", 0, 1.2))
-# True
-```
-
-## The `Penteract` class
-
-The `Penteract` class is a wrapper around the [`Volume` class](#the-volume-class) to simplify the creation of five-dimensional volumes.
-
-All the base functionality, such as default values, key accessors and iteration, is inherited by `Penteract`.
-
-### Construction
-
-`Penteract` requires six generic types:
-
-1. `v` key type
-1. `w` key type
-1. `x` key type
-1. `y` key type
-1. `z` key type
-1. Value type
-
-For example, to create a `Tesseract` with `v` integer keys, `w` string keys, `x` string keys, `y` int keys, `z` float keys and boolean values:
-
-```python
-from nvalues import Penteract
-
-penteract = Penteract[int, str, str, int, float, bool]()
-```
-
-### Reading and setting values
-
-Values can be read and set via their keys as described in the base [`Volume` class](#the-volume-class), but `Penteract` also provides `get()` and `set()` helper functions:
-
-```python
-from nvalues import Penteract
-
-penteract = Penteract[int, str, str, int, float, bool]()
-penteract.set(3, "A", "B", 0, 1.2, True)
-print(penteract.get(3, "A", "B", 0, 1.2))
-# True
-```
+The [`Line`](https://nvalues.dev/line/), [`Grid`](https://nvalues.dev/grid/), [`Cube`](https://nvalues.dev/cube/), [`Tesseract`](https://nvalues.dev/tesseract/) and [`Penteract`](https://nvalues.dev/penteract/) classes wrap and simplify the `Volume` class if you don't need more than five dimensions.
 
 ## Support
 

@@ -111,6 +111,47 @@ def test_default__set() -> None:
     assert v.default == "default"
 
 
+def test_delete__empty() -> None:
+    v = Volume[tuple[int, int], str]("default")
+    v[0, 0] = "0-0"
+    del v[0, 0]
+    assert v[0, 0] == "default"
+
+
+def test_delete__idempotent() -> None:
+    v = Volume[tuple[int, int], str]("default")
+    del v[0, 0]
+    assert v[0, 0] == "default"
+
+
+def test_delete__last() -> None:
+    v = Volume[tuple[int, int], str]("default")
+    v[0, 0] = "0-0"
+    v[1, 0] = "1-0"
+    v[1, 1] = "1-1"
+
+    del v[0, 0]
+
+    assert v[0, 0] == "default"
+    assert v[1, 0] == "1-0"
+    assert v[1, 1] == "1-1"
+
+
+def test_delete__one() -> None:
+    v = Volume[tuple[int, int], str]("default")
+    v[0, 0] = "0-0"
+    v[0, 1] = "0-1"
+    v[1, 0] = "1-0"
+    v[1, 1] = "1-1"
+
+    del v[0, 0]
+
+    assert v[0, 0] == "default"
+    assert v[0, 1] == "0-1"
+    assert v[1, 0] == "1-0"
+    assert v[1, 1] == "1-1"
+
+
 @mark.parametrize(
     "keys, expect",
     [
